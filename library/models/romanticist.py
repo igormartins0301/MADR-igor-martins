@@ -1,17 +1,22 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from typing import List
 
-Base = declarative_base()
+from book import Book
+from sqlalchemy import String
+from sqlalchemy.orm import Mapped, mapped_column, registry, relationship
+
+table_registry = registry()
 
 
-class Romanticist(Base):
+@table_registry.mapped_as_dataclass
+class Romanticist:
     __tablename__ = 'romanticists'
 
-    id = Column(Integer, primary_key=True, index=True)
-    nome = Column(String, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    nome: Mapped[str] = mapped_column(String, nullable=False, unique=True)
 
-    books = relationship('Book', back_populates='romanticista')
+    livros: Mapped[List['Book']] = relationship(
+        'Book', back_populates='romanticista'
+    )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Romanticist(id={self.id}, nome='{self.nome}')>"

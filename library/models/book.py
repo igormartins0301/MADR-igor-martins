@@ -1,22 +1,23 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from romanticist import Romanticist
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, registry, relationship
 
-Base = declarative_base()
+table_registry = registry()
 
 
-class Book(Base):
+@table_registry.mapped_as_dataclass
+class Book:
     __tablename__ = 'books'
 
-    id = Column(Integer, primary_key=True, index=True)
-    ano = Column(String, nullable=False)
-    titulo = Column(String, unique=True, nullable=False)
-    id_romanticista = Column(Integer, ForeignKey('romanticists.id'))
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    ano: Mapped[str] = mapped_column(String, nullable=False)
+    titulo: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    id_romanticista: Mapped[int] = mapped_column(ForeignKey('romanticists.id'))
 
-    romanticista = relationship('Romanticist', back_populates='books')
+    romanticista: Mapped['Romanticist'] = relationship(back_populates='books')
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
-            f'<Book(id={self.id}, ano={self.ano}, '
+            f"<Book(id={self.id}, ano='{self.ano}', "
             f"titulo='{self.titulo}', id_romanticista={self.id_romanticista})>"
         )
