@@ -1,9 +1,6 @@
-from romanticist import Romanticist
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, registry, relationship
-
-table_registry = registry()
-
+from library.models.registry import table_registry
 
 @table_registry.mapped_as_dataclass
 class Book:
